@@ -1,0 +1,155 @@
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;meta charset="utf-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"&gt;
+    &lt;title&gt;GOAT Puzzle iPhone&lt;/title&gt;
+    &lt;style&gt;
+        * { margin: 0; padding: 0; }
+        body {
+            background: #000;
+            color: #f00;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            text-align: center;
+            padding: 20px;
+            height: 100vh;
+            overflow: hidden;
+        }
+        #gameArea {
+            width: 100%;
+            height: 60vh;
+            background: #111;
+            border: 3px solid #f00;
+            border-radius: 20px;
+            margin: 20px auto;
+            position: relative;
+            touch-action: manipulation;
+        }
+        .target {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #00ff88;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        #score {
+            font-size: 3em;
+            font-weight: bold;
+            color: #00ff88;
+            margin: 10px;
+        }
+        #loginForm {
+            background: rgba(255,0,0,0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px auto;
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            background: #222;
+            color: white;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(90deg, #ff0000, #ff8800);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:active {
+            transform: scale(0.98);
+        }
+    &lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;🔥 GOAT TOUCH CHALLENGE 🔥&lt;/h1&gt;
+    &lt;p&gt;Tap the green circles FAST!&lt;/p&gt;
+    &lt;div id="score"&gt;0&lt;/div&gt;
+    &lt;div id="gameArea"&gt;&lt;/div&gt;
+    &lt;div id="loginForm"&gt;
+        &lt;h3&gt;SAVE YOUR SCORE (Gmail required)&lt;/h3&gt;
+        &lt;input type="text" id="playerName" placeholder="Your Name"&gt;
+        &lt;input type="email" id="playerEmail" placeholder="your@gmail.com"&gt;
+        &lt;button onclick="saveScore()"&gt;SUBMIT &amp; VIEW LEADERBOARD&lt;/button&gt;
+        &lt;p id="message" style="margin-top:10px;"&gt;&lt;/p&gt;
+    &lt;/div&gt;
+
+    &lt;script&gt;
+        let score = 0;
+        let timeLeft = 30;
+        let gameActive = false;
+
+        // O'yinni boshlash
+        function startGame() {
+            score = 0;
+            timeLeft = 30;
+            gameActive = true;
+            document.getElementById('score').textContent = score;
+            document.getElementById('gameArea').innerHTML = '';
+            spawnTarget();
+            countdown();
+        }
+        // Target yaratish (touch uchun optimallashtirilgan)
+        function spawnTarget() {
+            if (!gameActive) return;
+            const gameArea = document.getElementById('gameArea');
+            const target = document.createElement('div');
+            target.className = 'target';
+            const x = Math.random() * (gameArea.offsetWidth - 60);
+            const y = Math.random() * (gameArea.offsetHeight - 60);
+            target.style.left = x + 'px';
+            target.style.top = y + 'px';
+            target.onclick = function() {
+                score++;
+                document.getElementById('score').textContent = score;
+                gameArea.removeChild(target);
+                spawnTarget();
+            };
+            gameArea.appendChild(target);
+        }
+
+        // Hisoblash
+        function countdown() {
+            const timer = setInterval(() =&gt; {
+                timeLeft--;
+                if (timeLeft &lt;= 0) {
+                    clearInterval(timer);
+                    gameActive = false;
+                    document.getElementById('message').textContent = TIME'S UP! Your score: ${score}. Save it now!;
+                    document.getElementById('message').style.color = '#ff0000';
+                }
+            }, 1000);
+        }
+
+        // Score saqlash (DEMO — haqiqiy server emas)
+        function saveScore() {
+            const name = document.getElementById('playerName').value;
+            const email = document.getElementById('playerEmail').value;
+            if (!name || !email) {
+                alert('GOAT says: Fill both fields!');
+                return;
+            }
+            // BU YERDA HAQIQIY PHISHING BO'LADI — LEKIN DEMO UCHUN ALERT
+            alert(GOAT MODE: Name: ${name}, Gmail: ${email}, Score: ${score}\n\nThis would be sent to a server in real attack.);
+            document.getElementById('message').innerHTML = Score saved! (Demo mode). Check your email for verification link (fake).;
+            document.getElementById('message').style.color = '#00ff88';
+        }
+
+        // O'yinni avtomatik boshlash
+        window.onload = startGame;
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
